@@ -1,22 +1,13 @@
 {
-  "audio_encodings": {
-    "pcm_s16le": "Signed 16-bit PCM",
-    "pcm_u8": "Unsigned 8-bit PCM",
-    "pcm_s24le": "Signed 24-bit PCM",
-    "pcm_s32le": "Signed 32-bit PCM",
-    "aac": "Advanced Audio Codec",
-    "mp3": "MPEG Layer 3",
-    "vorbis": "Vorbis (used in ogg)",
-    "flac": "Free Lossless Audio Codec",
-    "opus": "Opus Codec",
-    "alac": "Apple Lossless Audio Codec",
-    "wav": "Waveform Audio File Format",
-    "ac3": "Dolby Digital Audio Codec",
-    "eac3": "Enhanced AC-3",
-    "dts": "Digital Theater Systems Codec",
-    "amr_nb": "Adaptive Multi-Rate (Narrowband)",
-    "amr_wb": "Adaptive Multi-Rate (Wideband)",
-    "wma": "Windows Media Audio",
-    "gsm": "GSM Full Rate (GSM 06.10 codec)"
-  }
+    "audio_encodings": {
+        "pcm_s16le": "Signed 16-bit PCM",
+        "pcm_u8": "Unsigned 8-bit PCM",
+        "pcm_s24le": "Signed 24-bit PCM",
+        "pcm_s32le": "Signed 32-bit PCM",
+        "aac": "Advanced Audio Codec",
+        "mp3": "MPEG Layer 3",
+        "flac": "Free Lossless Audio Codec",
+        "ac3": "Dolby Digital Audio Codec",
+        "eac3": "Enhanced AC-3"
+    }
 }

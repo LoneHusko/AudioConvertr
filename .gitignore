@@ -1,3 +1,13 @@
 .idea
 .venv
 preset
+reports
+dist
+build
+*.exe
+output
+*/__pycache__
+**/__pycache__
+*.spec
+*/presets.json
+**/presets.json

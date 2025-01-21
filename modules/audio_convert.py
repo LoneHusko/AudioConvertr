@@ -1,45 +1,46 @@
-from pydub import AudioSegment
+import subprocess
 
+# Supported audio encoding options (used with FFmpeg):
+# - pcm_s16le: Signed 16-bit PCM
+# - pcm_u8: Unsigned 8-bit PCM
+# - pcm_s24le: Signed 24-bit PCM
+# - pcm_s32le: Signed 32-bit PCM
+# - aac: Advanced Audio Codec
+# - mp3: MPEG Layer 3
+# - vorbis: Vorbis (used in ogg)
+# - flac: Free Lossless Audio Codec
+# - opus: Opus Codec
+# - alac: Apple Lossless Audio Codec
+# - wav: Waveform Audio File Format
+# - ac3: Dolby Digital Audio Codec
+# - eac3: Enhanced AC-3
+# - dts: Digital Theater Systems Codec
+# - amr_nb: Adaptive Multi-Rate (Narrowband)
+# - amr_wb: Adaptive Multi-Rate (Wideband)
+# - wma: Windows Media Audio
+# - gsm: GSM Full Rate (GSM 06.10 codec)
 
 def convert_audio_format(input_path: str, output_path: str, output_format: str):
     """
-    Convert an audio file to another format.
-
+    Convert an audio file to another format using subprocess and FFmpeg.
     Args:
         input_path (str): Path to the input audio file.
         output_path (str): Path to the output audio file.
         output_format (str): Desired output format (e.g., 'mp3', 'wav').
     """
-    # Supported audio encoding options (used with FFmpeg):
-    # - pcm_s16le: Signed 16-bit PCM
-    # - pcm_u8: Unsigned 8-bit PCM
-    # - pcm_s24le: Signed 24-bit PCM
-    # - pcm_s32le: Signed 32-bit PCM
-    # - aac: Advanced Audio Codec
-    # - mp3: MPEG Layer 3
-    # - vorbis: Vorbis (used in ogg)
-    # - flac: Free Lossless Audio Codec
-    # - opus: Opus Codec
-    # - alac: Apple Lossless Audio Codec
-    # - wav: Waveform Audio File Format
-    # - ac3: Dolby Digital Audio Codec
-    # - eac3: Enhanced AC-3
-    # - dts: Digital Theater Systems Codec
-    # - amr_nb: Adaptive Multi-Rate (Narrowband)
-    # - amr_wb: Adaptive Multi-Rate (Wideband)
-    # - wma: Windows Media Audio
-    # - gsm: GSM Full Rate (GSM 06.10 codec)
-
-    audio = AudioSegment.from_file(input_path)
-    audio.export(output_path, format=output_format)
-    print(f"Audio file converted to {output_format} format and saved at {output_path}")
+    try:
+        # Construct the ffmpeg command
+        command = f"ffmpeg -i \"{input_path}\" \"{output_path}\""
+        subprocess.run(command, shell=True, check=True)
+        print(f"Audio file converted to {output_format} format and saved at {output_path}")
+    except subprocess.CalledProcessError as e:
+        raise
 
 
 def edit_audio_properties(input_path: str, output_path: str, volume_change_db: float = 0, bitrate: str = None,
                           sample_rate: int = None, encoding: str = None):
     """
-    Edit properties of an audio file, such as volume, bitrate, or sampling rate.
-
+    Edit properties of an audio file, such as volume, bitrate, or sampling rate using subprocess and FFmpeg.
     Args:
         input_path (str): Path to the input audio file.
         output_path (str): Path to save the edited audio file.
@@ -48,31 +49,31 @@ def edit_audio_properties(input_path: str, output_path: str, volume_change_db: f
         sample_rate (int): Desired sampling rate in Hz (optional).
         encoding (str): Desired audio encoding (e.g., 'pcm_s16le').
     """
-    audio = AudioSegment.from_file(input_path)
+    try:
+        # Base ffmpeg command
+        command = f"ffmpeg -y -i \"{input_path}\""
 
-    # Adjust volume
-    if volume_change_db:
-        audio = audio + volume_change_db
+        # Apply volume change if specified
+        if volume_change_db:
+            command += f" -filter:a \"volume={volume_change_db}dB\""
 
-    # Export with optional encoding and sample rate
-    export_params = {'format': output_path.split('.')[-1]}
-    if bitrate:
-        export_params['bitrate'] = bitrate
-    if sample_rate:
-        export_params['parameters'] = ['-ar', str(sample_rate)]
-    if encoding:
-        if 'parameters' not in export_params:
-            export_params['parameters'] = []
-        export_params['parameters'].extend(['-acodec', encoding])
+        # Apply sample rate if specified
+        if sample_rate:
+            command += f" -ar {sample_rate}"
 
-    audio.export(output_path, **export_params)
-    print(f"Edited audio saved at {output_path}")
+        # Apply encoding if specified
+        if encoding:
+            command += f" -c:a {encoding}"
 
+        # Apply bitrate if specified
+        if bitrate:
+            command += f" -b:a {bitrate}"
 
-if __name__ == "__main__":
-    # Example usage
-    # Convert audio format
-    # convert_audio_format("input.wav", "output.mp3", "mp3")
+        # Specify the output path
+        command += f" \"{output_path}\""
 
-    # Edit audio properties
-    edit_audio_properties("input.mp3", "output_edited.wav", encoding="pcm_u8", sample_rate=48000)
+        # Run the command
+        subprocess.run(command, shell=True, check=True)
+        print(f"Edited audio saved at {output_path}")
+    except subprocess.CalledProcessError as e:
+        raise
